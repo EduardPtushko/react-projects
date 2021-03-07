@@ -1,10 +1,11 @@
 const isTest = String(process.env.NODE_ENV) === 'test';
+
 const plugins = [
     '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-proposal-optional-chaining',
 ];
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !isTest) {
     plugins.push('react-refresh/babel');
 }
 
