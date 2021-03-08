@@ -3,40 +3,30 @@ import { GlobalStyle } from '../globalStyle';
 import { Loading } from '../Loading';
 import { Tours } from '../Tours';
 import { Container, Title, Underline, Heading } from './style';
+import { ProjectData, useToursContext } from '../contexts/tours-context';
 
 const url = 'https://course-api.com/react-tours-project';
 
-export type ProjectData = {
-    id: string;
-    image: string;
-    info: string;
-    name: string;
-    price: string;
-};
-
 export const App: React.FC = () => {
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [data, setData] = React.useState<ProjectData[]>([]);
-    const [error, setError] = React.useState<string | null>(null);
+    const { state, dispatch } = useToursContext();
+    const { isLoading, error, data } = state;
 
-    const handleClick = (id: string) => {
-        const newData = [...data].filter((item) => item.id !== id);
-        setData(newData);
+    const fetchItems = async () => {
+        dispatch({ type: 'loading' });
+        const response = await window.fetch(url);
+
+        if (!response.ok) {
+            dispatch({
+                type: 'error',
+                paylod: 'Ошибка HTTP: ' + response.status,
+            });
+        } else {
+            const json: ProjectData[] = await response.json();
+            dispatch({ type: 'success', payload: json });
+        }
     };
 
     React.useEffect(() => {
-        const fetchItems = async () => {
-            const response = await window.fetch(url);
-
-            if (!response.ok) {
-                setError('Ошибка HTTP: ' + response.status);
-            } else {
-                const json: ProjectData[] = await response.json();
-                setData(json);
-                setIsLoading(false);
-            }
-        };
-
         fetchItems();
     }, []);
 
@@ -45,6 +35,13 @@ export const App: React.FC = () => {
             return <Loading />;
         } else if (error) {
             return <h3>{error}</h3>;
+        } else if (data.length === 0) {
+            return (
+                <div>
+                    <h3>There is no tours left</h3>
+                    <button onClick={fetchItems}>Fetch more tours</button>
+                </div>
+            );
         } else {
             return (
                 <section>
@@ -52,7 +49,7 @@ export const App: React.FC = () => {
                         <Heading>Our Tours</Heading>
                         <Underline></Underline>
                     </Title>
-                    <Tours data={data} onClick={handleClick} />
+                    <Tours />
                 </section>
             );
         }

@@ -1,21 +1,37 @@
 import React from 'react';
-import { ProjectData } from '../App/App';
+import { ProjectData } from '../contexts/tours-context';
+import { Article, Button, Header, Badge } from './style';
 
 interface TourProps {
     data: ProjectData;
-    onClick(id: string): void;
+    onClick(): void;
 }
 
 export const Tour: React.FC<TourProps> = ({ data, onClick }) => {
+    const [less, setLess] = React.useState(true);
+    const renderInfo = () => {
+        const text = data.info.substring(0, 240) + '...';
+        return (
+            <p>
+                {' '}
+                {less ? text : data.info}
+                <button onClick={() => setLess(!less)}>
+                    {less ? 'Read More' : 'Show Less'}
+                </button>
+            </p>
+        );
+    };
     return (
-        <article>
+        <Article>
             <img src={data.image} alt='Project' />
             <div>
-                <span>{data.name}</span>
-                <span>{data.price}</span>
+                <Header>
+                    <span>{data.name}</span>
+                    <Badge>{data.price}</Badge>
+                </Header>
+                {renderInfo()}
+                <Button onClick={onClick}>Not Interested</Button>
             </div>
-            <p>{data.info}</p>
-            <button onClick={() => onClick(data.id)}>Not Interested</button>
-        </article>
+        </Article>
     );
 };
