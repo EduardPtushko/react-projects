@@ -18,11 +18,12 @@ module.exports = {
     },
     devtool: 'eval-source-map',
     devServer: {
-        contentBase: './dist',
+        contentBase: path.resolve(__dirname, 'dist'),
         hot: true,
         overlay: true,
         historyApiFallback: true,
         open: true,
+        publicPath: '/',
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
@@ -42,7 +43,7 @@ module.exports = {
             },
             {
                 test: /\.(jp?g|png|gif|webp)$/,
-                type: 'asset/resource',
+                type: 'asset',
             },
             {
                 test: /\.css$/,

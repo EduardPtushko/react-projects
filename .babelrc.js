@@ -3,6 +3,7 @@ const isTest = String(process.env.NODE_ENV) === 'test';
 const plugins = [
     '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-proposal-optional-chaining',
+    '@babel/plugin-proposal-class-properties',
 ];
 
 if (process.env.NODE_ENV !== 'production' && !isTest) {
